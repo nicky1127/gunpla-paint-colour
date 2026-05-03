@@ -86,7 +86,7 @@ export default function NewProjectScreen() {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={styles.container}>
         <View style={[styles.content, { padding: pad, gap: pad, maxWidth: contentMaxWidth, alignSelf: 'center', width: '100%' }]}>
-          <Text style={[styles.heading, { fontSize: fs(24) }]}>New Project</Text>
+          <Text style={[styles.heading, { fontSize: fs(24) }]}>New</Text>
 
           <View style={[styles.field, { gap: sp(6) }]}>
             <Text style={[styles.label, { fontSize: fs(13) }]}>Project Name *</Text>

@@ -42,7 +42,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="inventory"
         options={{
-          title: 'Paints',
+          title: 'Inventory',
           tabBarIcon: ({ focused, color }) => <TabIcon icon="flask" focused={focused} color={color} />,
         }}
       />

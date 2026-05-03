@@ -72,7 +72,7 @@ export default function CatalogueScreen() {
           <Ionicons name="chevron-back" size={sp(20, 26)} color={theme.accent} />
           <Text style={[styles.backText, { fontSize: fs(16) }]}>Back</Text>
         </TouchableOpacity>
-        <Text style={[styles.heading, { fontSize: fs(20) }]}>Browse Catalogue</Text>
+        <Text style={[styles.heading, { fontSize: fs(20) }]}>Catalog</Text>
       </View>
 
       <FlatList

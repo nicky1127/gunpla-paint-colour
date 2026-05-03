@@ -58,7 +58,7 @@ export default function AddManualPaintScreen() {
               <Ionicons name="chevron-back" size={sp(20, 26)} color={theme.accent} />
               <Text style={[styles.backText, { fontSize: fs(16) }]}>Back</Text>
             </TouchableOpacity>
-            <Text style={[styles.heading, { fontSize: fs(20) }]}>Add Paint Manually</Text>
+            <Text style={[styles.heading, { fontSize: fs(20) }]}>Add Paint</Text>
           </View>
 
           <View style={[styles.field, { gap: sp(8) }]}>

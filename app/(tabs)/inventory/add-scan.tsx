@@ -96,7 +96,7 @@ export default function AddScanScreen() {
             <Ionicons name="chevron-back" size={sp(20, 26)} color={theme.accent} />
             <Text style={[styles.backText, { fontSize: fs(16) }]}>Back</Text>
           </TouchableOpacity>
-          <Text style={[styles.heading, { fontSize: fs(20) }]}>Scan Paint Pot</Text>
+          <Text style={[styles.heading, { fontSize: fs(20) }]}>Scan</Text>
         </View>
 
         <Text style={[styles.description, { fontSize: fs(14) }]}>
