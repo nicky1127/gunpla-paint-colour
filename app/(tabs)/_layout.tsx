@@ -33,13 +33,6 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ focused, color }) => <TabIcon icon="settings" focused={focused} color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="projects"
         options={{
           title: 'Projects',
@@ -51,6 +44,13 @@ export default function TabLayout() {
         options={{
           title: 'Paints',
           tabBarIcon: ({ focused, color }) => <TabIcon icon="flask" focused={focused} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="settings" focused={focused} color={color} />,
         }}
       />
     </Tabs>

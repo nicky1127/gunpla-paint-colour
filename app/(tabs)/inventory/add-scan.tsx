@@ -10,6 +10,7 @@ import { scanPaintPot } from '../../../lib/api';
 import type { ScannedPaint } from '../../../lib/api';
 import { useResponsive } from '../../../lib/responsive';
 import { useTheme, type Theme } from '../../../lib/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function AddScanScreen() {
   const router = useRouter();
@@ -91,8 +92,9 @@ export default function AddScanScreen() {
     <ScrollView style={styles.container}>
       <View style={[styles.content, { padding: pad, gap: pad, maxWidth: contentMaxWidth, alignSelf: 'center', width: '100%' }]}>
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={[styles.backText, { fontSize: fs(16) }]}>‹ Back</Text>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+            <Ionicons name="chevron-back" size={sp(20, 26)} color={theme.accent} />
+            <Text style={[styles.backText, { fontSize: fs(16) }]}>Back</Text>
           </TouchableOpacity>
           <Text style={[styles.heading, { fontSize: fs(20) }]}>Scan Paint Pot</Text>
         </View>
@@ -183,6 +185,7 @@ function createStyles(t: Theme) {
     container: { flex: 1, backgroundColor: t.bg },
     content: {},
     headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+    backBtn: { flexDirection: 'row', alignItems: 'center' },
     backText: { color: t.accent },
     heading: { color: t.text, fontWeight: '800' },
     description: { color: t.subtext, lineHeight: 20 },

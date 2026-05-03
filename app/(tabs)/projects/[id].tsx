@@ -11,6 +11,7 @@ import MixSuggestion from '../../../components/MixSuggestion';
 import { getMixSuggestion } from '../../../lib/api';
 import { useResponsive } from '../../../lib/responsive';
 import { useTheme, type Theme } from '../../../lib/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ProjectDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -89,7 +90,8 @@ export default function ProjectDetailScreen() {
     <View style={styles.container}>
       <View style={[styles.header, { padding: sp(16), paddingTop: insets.top + sp(12) }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={[styles.backText, { fontSize: fs(16) }]}>‹ Back</Text>
+          <Ionicons name="chevron-back" size={sp(20, 26)} color={theme.accent} />
+          <Text style={[styles.backText, { fontSize: fs(16) }]}>Back</Text>
         </TouchableOpacity>
         <View style={styles.headerInfo}>
           <Text style={[styles.title, { fontSize: fs(22) }]}>{project.name}</Text>
@@ -175,7 +177,7 @@ function createStyles(t: Theme) {
       borderBottomWidth: 1,
       borderBottomColor: t.border,
     },
-    backBtn: { marginBottom: 8 },
+    backBtn: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
     backText: { color: t.accent },
     headerInfo: { gap: 4 },
     title: { color: t.text, fontWeight: '800' },

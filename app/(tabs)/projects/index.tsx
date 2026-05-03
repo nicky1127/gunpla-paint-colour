@@ -3,6 +3,7 @@ import {
   View, Text, FlatList, StyleSheet, TouchableOpacity,
   ActivityIndicator, RefreshControl, Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase, type Project } from '../../../lib/supabase';
 import { useResponsive } from '../../../lib/responsive';
@@ -84,7 +85,7 @@ export default function ProjectsScreen() {
                 {new Date(item.created_at).toLocaleDateString()}
               </Text>
             </View>
-            <Text style={[styles.arrow, { fontSize: fs(22) }]}>›</Text>
+            <Ionicons name="chevron-forward" size={sp(20, 24)} color={theme.muted} style={{ paddingHorizontal: sp(12) }} />
           </TouchableOpacity>
         )}
       />
@@ -122,7 +123,6 @@ function createStyles(t: Theme) {
     cardKit: { color: t.subtext },
     cardCode: { color: t.accent, fontFamily: 'monospace' },
     cardDate: { color: t.muted, marginTop: 4 },
-    arrow: { color: t.muted, paddingHorizontal: 16 },
     fab: {
       position: 'absolute',
       backgroundColor: t.accent,

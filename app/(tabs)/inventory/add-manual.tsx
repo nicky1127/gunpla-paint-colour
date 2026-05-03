@@ -8,6 +8,7 @@ import { supabase } from '../../../lib/supabase';
 import { isValidHex, normaliseHex } from '../../../lib/colourUtils';
 import { useResponsive } from '../../../lib/responsive';
 import { useTheme, type Theme } from '../../../lib/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 const BRANDS = ['Mr. Hobby', 'Tamiya', 'Vallejo', 'AK Interactive', 'GSI Creos', 'Citadel', 'Other'];
 
@@ -53,8 +54,9 @@ export default function AddManualPaintScreen() {
       <ScrollView style={styles.container}>
         <View style={[styles.content, { padding: pad, gap: pad, maxWidth: contentMaxWidth, alignSelf: 'center', width: '100%' }]}>
           <View style={styles.headerRow}>
-            <TouchableOpacity onPress={() => router.back()}>
-              <Text style={[styles.backText, { fontSize: fs(16) }]}>‹ Back</Text>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+              <Ionicons name="chevron-back" size={sp(20, 26)} color={theme.accent} />
+              <Text style={[styles.backText, { fontSize: fs(16) }]}>Back</Text>
             </TouchableOpacity>
             <Text style={[styles.heading, { fontSize: fs(20) }]}>Add Paint Manually</Text>
           </View>
@@ -141,6 +143,7 @@ function createStyles(t: Theme) {
     container: { flex: 1, backgroundColor: t.bg },
     content: {},
     headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+    backBtn: { flexDirection: 'row', alignItems: 'center' },
     backText: { color: t.accent },
     heading: { color: t.text, fontWeight: '800' },
     field: {},
