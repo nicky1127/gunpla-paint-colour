@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { View, Text } from 'react-native';
 import { useResponsive } from '../../lib/responsive';
+import { useTheme } from '../../lib/theme';
 
 function TabIcon({ name, focused }: { name: string; focused: boolean }) {
   const { fs } = useResponsive();
@@ -13,23 +14,24 @@ function TabIcon({ name, focused }: { name: string; focused: boolean }) {
 
 export default function TabLayout() {
   const { sp } = useResponsive();
+  const { theme } = useTheme();
   return (
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: '#1a1a2e',
-          borderTopColor: '#2d2d44',
+          backgroundColor: theme.header,
+          borderTopColor: theme.border,
           borderTopWidth: 1,
           height: sp(49, 72),
           paddingBottom: sp(4, 14),
           paddingTop: sp(4, 8),
         },
-        tabBarActiveTintColor: '#e8a838',
-        tabBarInactiveTintColor: '#888',
+        tabBarActiveTintColor: theme.accent,
+        tabBarInactiveTintColor: theme.muted,
         tabBarLabelStyle: { fontSize: sp(10, 13) },
-        headerStyle: { backgroundColor: '#1a1a2e' },
-        headerTintColor: '#fff',
-        headerTitleStyle: { color: '#fff', fontWeight: '700', fontSize: sp(17, 20) },
+        headerStyle: { backgroundColor: theme.header },
+        headerTintColor: theme.text,
+        headerTitleStyle: { color: theme.text, fontWeight: '700', fontSize: sp(17, 20) },
       }}
     >
       <Tabs.Screen
@@ -44,6 +46,13 @@ export default function TabLayout() {
         options={{
           title: 'My Paints',
           tabBarIcon: ({ focused }) => <TabIcon name="🖌️" focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ focused }) => <TabIcon name="⚙️" focused={focused} />,
         }}
       />
     </Tabs>

@@ -8,11 +8,14 @@ import { useRouter } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { CATALOGUES, type CataloguePaint } from '../../../assets/paint-catalogues/index';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 export default function CatalogueScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { sp, fs, numColumns } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [selectedBrand, setSelectedBrand] = useState(CATALOGUES[0].brand);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -94,7 +97,7 @@ export default function CatalogueScreen() {
           value={search}
           onChangeText={setSearch}
           placeholder="Search by name or code..."
-          placeholderTextColor="#555"
+          placeholderTextColor={theme.placeholder}
           clearButtonMode="while-editing"
         />
       </View>
@@ -152,52 +155,54 @@ export default function CatalogueScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  header: {
-    flexDirection: 'row', alignItems: 'center', gap: 16,
-    backgroundColor: '#1a1a2e', borderBottomWidth: 1, borderBottomColor: '#2d2d44',
-  },
-  backText: { color: '#e8a838' },
-  heading: { color: '#fff', fontWeight: '800' },
-  brandChip: {
-    borderRadius: 20,
-    backgroundColor: '#1e1e32', borderWidth: 1, borderColor: '#2d2d44',
-  },
-  brandChipActive: { borderColor: '#e8a838', backgroundColor: '#e8a83820' },
-  brandChipText: { color: '#888', fontWeight: '600' },
-  brandChipTextActive: { color: '#e8a838' },
-  searchInput: {
-    backgroundColor: '#1e1e32', color: '#fff', borderRadius: 10,
-    borderWidth: 1, borderColor: '#2d2d44',
-  },
-  paintRow: {
-    flexDirection: 'row', alignItems: 'center',
-    borderBottomWidth: 1, borderBottomColor: '#1e1e32',
-  },
-  paintRowSelected: { backgroundColor: '#e8a83810', borderRadius: 8 },
-  swatch: {
-    flexShrink: 0,
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
-  },
-  paintInfo: { flex: 1 },
-  paintCode: { color: '#e8a838', fontWeight: '700', fontFamily: 'monospace' },
-  paintName: { color: '#fff' },
-  checkbox: {
-    borderRadius: 6, borderWidth: 2, borderColor: '#444',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  checkboxSelected: { borderColor: '#e8a838', backgroundColor: '#e8a838' },
-  checkmark: { color: '#12121f', fontWeight: '800' },
-  empty: { color: '#888', textAlign: 'center', marginTop: 40 },
-  bottomBar: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    backgroundColor: '#1a1a2e', borderTopWidth: 1, borderTopColor: '#2d2d44',
-    flexDirection: 'row', alignItems: 'center',
-  },
-  selectedCount: { color: '#e8a838', fontWeight: '700' },
-  addBtn: { flex: 1, backgroundColor: '#e8a838', borderRadius: 10, alignItems: 'center' },
-  addBtnText: { color: '#12121f', fontWeight: '800' },
-  btnDisabled: { opacity: 0.5 },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    header: {
+      flexDirection: 'row', alignItems: 'center', gap: 16,
+      backgroundColor: t.header, borderBottomWidth: 1, borderBottomColor: t.border,
+    },
+    backText: { color: t.accent },
+    heading: { color: t.text, fontWeight: '800' },
+    brandChip: {
+      borderRadius: 20,
+      backgroundColor: t.card, borderWidth: 1, borderColor: t.border,
+    },
+    brandChipActive: { borderColor: t.accent, backgroundColor: `${t.accent}20` },
+    brandChipText: { color: t.muted, fontWeight: '600' },
+    brandChipTextActive: { color: t.accent },
+    searchInput: {
+      backgroundColor: t.input, color: t.text, borderRadius: 10,
+      borderWidth: 1, borderColor: t.border,
+    },
+    paintRow: {
+      flexDirection: 'row', alignItems: 'center',
+      borderBottomWidth: 1, borderBottomColor: t.card,
+    },
+    paintRowSelected: { backgroundColor: `${t.accent}10`, borderRadius: 8 },
+    swatch: {
+      flexShrink: 0,
+      alignItems: 'center', justifyContent: 'center',
+      borderWidth: 1, borderColor: 'rgba(0,0,0,0.1)',
+    },
+    paintInfo: { flex: 1 },
+    paintCode: { color: t.accent, fontWeight: '700', fontFamily: 'monospace' },
+    paintName: { color: t.text },
+    checkbox: {
+      borderRadius: 6, borderWidth: 2, borderColor: t.border,
+      alignItems: 'center', justifyContent: 'center',
+    },
+    checkboxSelected: { borderColor: t.accent, backgroundColor: t.accent },
+    checkmark: { color: '#12121f', fontWeight: '800' },
+    empty: { color: t.muted, textAlign: 'center', marginTop: 40 },
+    bottomBar: {
+      position: 'absolute', bottom: 0, left: 0, right: 0,
+      backgroundColor: t.header, borderTopWidth: 1, borderTopColor: t.border,
+      flexDirection: 'row', alignItems: 'center',
+    },
+    selectedCount: { color: t.accent, fontWeight: '700' },
+    addBtn: { flex: 1, backgroundColor: t.accent, borderRadius: 10, alignItems: 'center' },
+    addBtnText: { color: '#12121f', fontWeight: '800' },
+    btnDisabled: { opacity: 0.5 },
+  });
+}

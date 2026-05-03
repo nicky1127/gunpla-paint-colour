@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View, Text, FlatList, StyleSheet, TouchableOpacity,
   TextInput, Alert, RefreshControl, ActivityIndicator,
@@ -7,12 +7,15 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase, type PaintInventory } from '../../../lib/supabase';
 import PaintCard from '../../../components/PaintCard';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 const BRANDS = ['All', 'Mr. Hobby', 'Tamiya', 'Vallejo', 'AK Interactive', 'GSI Creos', 'Citadel', 'Other'];
 
 export default function InventoryScreen() {
   const router = useRouter();
   const { sp, fs, numColumns } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [paints, setPaints] = useState<PaintInventory[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -58,7 +61,7 @@ export default function InventoryScreen() {
   });
 
   if (loading) {
-    return <View style={styles.centered}><ActivityIndicator color="#e8a838" size="large" /></View>;
+    return <View style={styles.centered}><ActivityIndicator color={theme.accent} size="large" /></View>;
   }
 
   const fabSize = sp(58, 68);
@@ -72,7 +75,7 @@ export default function InventoryScreen() {
           value={search}
           onChangeText={setSearch}
           placeholder="Search paints..."
-          placeholderTextColor="#555"
+          placeholderTextColor={theme.placeholder}
           clearButtonMode="while-editing"
         />
       </View>
@@ -100,7 +103,7 @@ export default function InventoryScreen() {
         data={filtered}
         keyExtractor={(p) => p.id}
         numColumns={numColumns}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#e8a838" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent} />}
         contentContainerStyle={{ padding: sp(12), gap: sp(4), paddingBottom: 100 }}
         columnWrapperStyle={numColumns > 1 ? { gap: sp(8) } : undefined}
         ListEmptyComponent={
@@ -152,40 +155,42 @@ export default function InventoryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  centered: { flex: 1, backgroundColor: '#12121f', alignItems: 'center', justifyContent: 'center' },
-  searchInput: {
-    backgroundColor: '#1e1e32', color: '#fff', borderRadius: 10,
-    borderWidth: 1, borderColor: '#2d2d44',
-  },
-  brandChip: {
-    borderRadius: 20,
-    backgroundColor: '#1e1e32', borderWidth: 1, borderColor: '#2d2d44',
-  },
-  brandChipActive: { borderColor: '#e8a838', backgroundColor: '#e8a83820' },
-  brandChipText: { color: '#888', fontWeight: '600' },
-  brandChipTextActive: { color: '#e8a838' },
-  count: { color: '#888', fontWeight: '600', textTransform: 'uppercase', marginBottom: 4 },
-  empty: { alignItems: 'center', gap: 8 },
-  emptyTitle: { color: '#fff', fontWeight: '700' },
-  emptySubtitle: { color: '#888' },
-  fabGroup: {
-    position: 'absolute',
-    flexDirection: 'row', alignItems: 'center',
-  },
-  fab: {
-    backgroundColor: '#e8a838',
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#e8a838', shadowOpacity: 0.5, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
-  },
-  fabSecondary: {
-    backgroundColor: '#2d2d44',
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
-  },
-  fabText: { color: '#12121f', fontWeight: '700', marginTop: -2 },
-  fabTextSmall: { color: '#fff', fontWeight: '700' },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    centered: { flex: 1, backgroundColor: t.bg, alignItems: 'center', justifyContent: 'center' },
+    searchInput: {
+      backgroundColor: t.input, color: t.text, borderRadius: 10,
+      borderWidth: 1, borderColor: t.border,
+    },
+    brandChip: {
+      borderRadius: 20,
+      backgroundColor: t.card, borderWidth: 1, borderColor: t.border,
+    },
+    brandChipActive: { borderColor: t.accent, backgroundColor: `${t.accent}20` },
+    brandChipText: { color: t.muted, fontWeight: '600' },
+    brandChipTextActive: { color: t.accent },
+    count: { color: t.muted, fontWeight: '600', textTransform: 'uppercase', marginBottom: 4 },
+    empty: { alignItems: 'center', gap: 8 },
+    emptyTitle: { color: t.text, fontWeight: '700' },
+    emptySubtitle: { color: t.muted },
+    fabGroup: {
+      position: 'absolute',
+      flexDirection: 'row', alignItems: 'center',
+    },
+    fab: {
+      backgroundColor: t.accent,
+      alignItems: 'center', justifyContent: 'center',
+      shadowColor: t.accent, shadowOpacity: 0.5, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+      elevation: 8,
+    },
+    fabSecondary: {
+      backgroundColor: t.card,
+      alignItems: 'center', justifyContent: 'center',
+      shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
+      elevation: 4,
+    },
+    fabText: { color: '#12121f', fontWeight: '700', marginTop: -2 },
+    fabTextSmall: { color: t.text, fontWeight: '700' },
+  });
+}

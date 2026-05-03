@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
   ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView,
@@ -10,6 +10,7 @@ import { supabase } from '../../../lib/supabase';
 import { extractColourFromImage, type ColourExtractionMode, type ExtractedColour } from '../../../lib/api';
 import { isValidHex, normaliseHex } from '../../../lib/colourUtils';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 type InputMode = 'text' | 'hex' | 'image';
 
@@ -17,6 +18,8 @@ export default function AddColourScreen() {
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const router = useRouter();
   const { sp, fs, contentMaxWidth } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [mode, setMode] = useState<InputMode>('text');
   const [colourName, setColourName] = useState('');
@@ -143,7 +146,7 @@ export default function AddColourScreen() {
                   : mode === 'hex' ? 'e.g. RX-78 White'
                   : 'e.g. Cockpit Panel Dark'
               }
-              placeholderTextColor="#555"
+              placeholderTextColor={theme.placeholder}
             />
           </View>
 
@@ -155,7 +158,7 @@ export default function AddColourScreen() {
                 value={hexInput}
                 onChangeText={setHexInput}
                 placeholder="#FF5500 or leave blank"
-                placeholderTextColor="#555"
+                placeholderTextColor={theme.placeholder}
                 autoCapitalize="characters"
                 maxLength={9}
               />
@@ -245,50 +248,52 @@ export default function AddColourScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  content: {},
-  headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
-  backText: { color: '#e8a838' },
-  heading: { color: '#fff', fontWeight: '800' },
-  modeRow: { flexDirection: 'row' },
-  modeBtn: {
-    flex: 1, borderRadius: 10,
-    borderWidth: 1, borderColor: '#2d2d44',
-    alignItems: 'center',
-  },
-  modeBtnActive: { borderColor: '#e8a838', backgroundColor: '#e8a83820' },
-  modeBtnText: { color: '#888', fontWeight: '600' },
-  modeBtnTextActive: { color: '#e8a838' },
-  field: {},
-  label: { color: '#aaa', fontWeight: '600' },
-  input: {
-    backgroundColor: '#1e1e32', color: '#fff', borderRadius: 10,
-    borderWidth: 1, borderColor: '#2d2d44',
-  },
-  hexPreview: { width: '100%', borderRadius: 8, marginTop: 6 },
-  section: { backgroundColor: '#1e1e32', borderRadius: 14 },
-  sectionTitle: { color: '#e8a838', fontWeight: '700', textTransform: 'uppercase' },
-  imageButtonRow: { flexDirection: 'row' },
-  imageBtn: {
-    flex: 1, backgroundColor: '#2d2d44', borderRadius: 10, padding: 12,
-    alignItems: 'center',
-  },
-  imageBtnText: { color: '#fff', fontWeight: '600' },
-  preview: { width: '100%', borderRadius: 10, backgroundColor: '#333' },
-  extractBtn: { backgroundColor: '#2563eb', borderRadius: 10, alignItems: 'center' },
-  extractBtnText: { color: '#fff', fontWeight: '700' },
-  btnDisabled: { opacity: 0.5 },
-  extractedList: {},
-  extractedRow: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#12121f', borderRadius: 8,
-    borderWidth: 1, borderColor: 'transparent',
-  },
-  extractedRowSelected: { borderColor: '#e8a838' },
-  extractedDot: { borderRadius: 6, flexShrink: 0 },
-  extractedName: { color: '#fff', flex: 1 },
-  extractedHex: { color: '#888', fontFamily: 'monospace' },
-  saveBtn: { backgroundColor: '#e8a838', borderRadius: 12, alignItems: 'center' },
-  saveBtnText: { color: '#12121f', fontWeight: '800' },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    content: {},
+    headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+    backText: { color: t.accent },
+    heading: { color: t.text, fontWeight: '800' },
+    modeRow: { flexDirection: 'row' },
+    modeBtn: {
+      flex: 1, borderRadius: 10,
+      borderWidth: 1, borderColor: t.border,
+      alignItems: 'center',
+    },
+    modeBtnActive: { borderColor: t.accent, backgroundColor: `${t.accent}20` },
+    modeBtnText: { color: t.muted, fontWeight: '600' },
+    modeBtnTextActive: { color: t.accent },
+    field: {},
+    label: { color: t.subtext, fontWeight: '600' },
+    input: {
+      backgroundColor: t.input, color: t.text, borderRadius: 10,
+      borderWidth: 1, borderColor: t.border,
+    },
+    hexPreview: { width: '100%', borderRadius: 8, marginTop: 6 },
+    section: { backgroundColor: t.card, borderRadius: 14 },
+    sectionTitle: { color: t.accent, fontWeight: '700', textTransform: 'uppercase' },
+    imageButtonRow: { flexDirection: 'row' },
+    imageBtn: {
+      flex: 1, backgroundColor: t.border, borderRadius: 10, padding: 12,
+      alignItems: 'center',
+    },
+    imageBtnText: { color: t.text, fontWeight: '600' },
+    preview: { width: '100%', borderRadius: 10, backgroundColor: t.border },
+    extractBtn: { backgroundColor: '#2563eb', borderRadius: 10, alignItems: 'center' },
+    extractBtnText: { color: '#fff', fontWeight: '700' },
+    btnDisabled: { opacity: 0.5 },
+    extractedList: {},
+    extractedRow: {
+      flexDirection: 'row', alignItems: 'center',
+      backgroundColor: t.bg, borderRadius: 8,
+      borderWidth: 1, borderColor: 'transparent',
+    },
+    extractedRowSelected: { borderColor: t.accent },
+    extractedDot: { borderRadius: 6, flexShrink: 0 },
+    extractedName: { color: t.text, flex: 1 },
+    extractedHex: { color: t.muted, fontFamily: 'monospace' },
+    saveBtn: { backgroundColor: t.accent, borderRadius: 12, alignItems: 'center' },
+    saveBtnText: { color: '#12121f', fontWeight: '800' },
+  });
+}

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import type { PaintInventory } from '../lib/supabase';
 import { useResponsive } from '../lib/responsive';
+import { useTheme, type Theme } from '../lib/theme';
 
 type Props = {
   paint: PaintInventory;
@@ -11,6 +12,8 @@ type Props = {
 
 export default function PaintCard({ paint, onPress, onLongPress }: Props) {
   const { sp, fs } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const bg = paint.hex ?? '#888888';
   const swatchSize = sp(44, 58);
 
@@ -36,24 +39,26 @@ export default function PaintCard({ paint, onPress, onLongPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1e1e32',
-    borderRadius: 10,
-    marginVertical: 3,
-  },
-  swatch: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    flexShrink: 0,
-  },
-  info: { flex: 1, gap: 2 },
-  brand: { color: '#e8a838', fontWeight: '700', textTransform: 'uppercase' },
-  name: { color: '#fff', fontWeight: '600' },
-  code: { color: '#888', fontFamily: 'monospace' },
-  hex: { color: '#666', fontFamily: 'monospace' },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: t.card,
+      borderRadius: 10,
+      marginVertical: 3,
+    },
+    swatch: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.1)',
+      flexShrink: 0,
+    },
+    info: { flex: 1, gap: 2 },
+    brand: { color: t.accent, fontWeight: '700', textTransform: 'uppercase' },
+    name: { color: t.text, fontWeight: '600' },
+    code: { color: t.muted, fontFamily: 'monospace' },
+    hex: { color: t.muted, fontFamily: 'monospace' },
+  });
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
   ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform,
@@ -7,12 +7,15 @@ import { useRouter } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { isValidHex, normaliseHex } from '../../../lib/colourUtils';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 const BRANDS = ['Mr. Hobby', 'Tamiya', 'Vallejo', 'AK Interactive', 'GSI Creos', 'Citadel', 'Other'];
 
 export default function AddManualPaintScreen() {
   const router = useRouter();
   const { sp, fs, contentMaxWidth } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [brand, setBrand] = useState('');
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
@@ -74,7 +77,7 @@ export default function AddManualPaintScreen() {
               value={brand}
               onChangeText={setBrand}
               placeholder="Or type brand name"
-              placeholderTextColor="#555"
+              placeholderTextColor={theme.placeholder}
             />
           </View>
 
@@ -85,7 +88,7 @@ export default function AddManualPaintScreen() {
               value={code}
               onChangeText={setCode}
               placeholder="e.g. C-8 or XF-19"
-              placeholderTextColor="#555"
+              placeholderTextColor={theme.placeholder}
               autoCapitalize="characters"
             />
           </View>
@@ -97,7 +100,7 @@ export default function AddManualPaintScreen() {
               value={name}
               onChangeText={setName}
               placeholder="e.g. Silver"
-              placeholderTextColor="#555"
+              placeholderTextColor={theme.placeholder}
             />
           </View>
 
@@ -108,7 +111,7 @@ export default function AddManualPaintScreen() {
               value={hex}
               onChangeText={setHex}
               placeholder="#RRGGBB"
-              placeholderTextColor="#555"
+              placeholderTextColor={theme.placeholder}
               autoCapitalize="characters"
               maxLength={9}
             />
@@ -133,27 +136,29 @@ export default function AddManualPaintScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  content: {},
-  headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
-  backText: { color: '#e8a838' },
-  heading: { color: '#fff', fontWeight: '800' },
-  field: {},
-  label: { color: '#aaa', fontWeight: '600' },
-  input: {
-    backgroundColor: '#1e1e32', color: '#fff', borderRadius: 10,
-    borderWidth: 1, borderColor: '#2d2d44',
-  },
-  chip: {
-    borderRadius: 20,
-    backgroundColor: '#1e1e32', borderWidth: 1, borderColor: '#2d2d44',
-  },
-  chipActive: { borderColor: '#e8a838', backgroundColor: '#e8a83820' },
-  chipText: { color: '#888', fontWeight: '600' },
-  chipTextActive: { color: '#e8a838' },
-  hexPreview: { width: '100%', borderRadius: 8 },
-  saveBtn: { backgroundColor: '#e8a838', borderRadius: 12, alignItems: 'center' },
-  saveBtnText: { color: '#12121f', fontWeight: '800' },
-  btnDisabled: { opacity: 0.5 },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    content: {},
+    headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+    backText: { color: t.accent },
+    heading: { color: t.text, fontWeight: '800' },
+    field: {},
+    label: { color: t.subtext, fontWeight: '600' },
+    input: {
+      backgroundColor: t.input, color: t.text, borderRadius: 10,
+      borderWidth: 1, borderColor: t.border,
+    },
+    chip: {
+      borderRadius: 20,
+      backgroundColor: t.card, borderWidth: 1, borderColor: t.border,
+    },
+    chipActive: { borderColor: t.accent, backgroundColor: `${t.accent}20` },
+    chipText: { color: t.muted, fontWeight: '600' },
+    chipTextActive: { color: t.accent },
+    hexPreview: { width: '100%', borderRadius: 8 },
+    saveBtn: { backgroundColor: t.accent, borderRadius: 12, alignItems: 'center' },
+    saveBtnText: { color: '#12121f', fontWeight: '800' },
+    btnDisabled: { opacity: 0.5 },
+  });
+}

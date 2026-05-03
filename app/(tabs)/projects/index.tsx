@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View, Text, FlatList, StyleSheet, TouchableOpacity,
   ActivityIndicator, RefreshControl, Alert,
@@ -6,10 +6,13 @@ import {
 import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase, type Project } from '../../../lib/supabase';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 export default function ProjectsScreen() {
   const router = useRouter();
   const { sp, fs, numColumns } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -43,7 +46,7 @@ export default function ProjectsScreen() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator color="#e8a838" size="large" />
+        <ActivityIndicator color={theme.accent} size="large" />
       </View>
     );
   }
@@ -57,7 +60,7 @@ export default function ProjectsScreen() {
         data={projects}
         keyExtractor={(p) => p.id}
         numColumns={numColumns}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#e8a838" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent} />}
         contentContainerStyle={{ padding: sp(16), gap: sp(12) }}
         columnWrapperStyle={numColumns > 1 ? { gap: sp(12) } : undefined}
         ListEmptyComponent={
@@ -99,32 +102,34 @@ export default function ProjectsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  centered: { flex: 1, backgroundColor: '#12121f', alignItems: 'center', justifyContent: 'center' },
-  empty: { alignItems: 'center', gap: 8 },
-  emptyTitle: { color: '#fff', fontWeight: '700' },
-  emptySubtitle: { color: '#888' },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1e1e32',
-    borderRadius: 14,
-    overflow: 'hidden',
-  },
-  cardAccent: { width: 5, alignSelf: 'stretch', backgroundColor: '#e8a838' },
-  cardContent: { flex: 1, gap: 3 },
-  cardName: { color: '#fff', fontWeight: '700' },
-  cardKit: { color: '#ccc' },
-  cardCode: { color: '#e8a838', fontFamily: 'monospace' },
-  cardDate: { color: '#666', marginTop: 4 },
-  arrow: { color: '#666', paddingHorizontal: 16 },
-  fab: {
-    position: 'absolute',
-    backgroundColor: '#e8a838',
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#e8a838', shadowOpacity: 0.5, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
-  },
-  fabText: { color: '#12121f', fontWeight: '700', marginTop: -2 },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    centered: { flex: 1, backgroundColor: t.bg, alignItems: 'center', justifyContent: 'center' },
+    empty: { alignItems: 'center', gap: 8 },
+    emptyTitle: { color: t.text, fontWeight: '700' },
+    emptySubtitle: { color: t.muted },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: t.card,
+      borderRadius: 14,
+      overflow: 'hidden',
+    },
+    cardAccent: { width: 5, alignSelf: 'stretch', backgroundColor: t.accent },
+    cardContent: { flex: 1, gap: 3 },
+    cardName: { color: t.text, fontWeight: '700' },
+    cardKit: { color: t.subtext },
+    cardCode: { color: t.accent, fontFamily: 'monospace' },
+    cardDate: { color: t.muted, marginTop: 4 },
+    arrow: { color: t.muted, paddingHorizontal: 16 },
+    fab: {
+      position: 'absolute',
+      backgroundColor: t.accent,
+      alignItems: 'center', justifyContent: 'center',
+      shadowColor: t.accent, shadowOpacity: 0.5, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+      elevation: 8,
+    },
+    fabText: { color: '#12121f', fontWeight: '700', marginTop: -2 },
+  });
+}

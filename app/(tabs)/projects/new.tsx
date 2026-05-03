@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
   ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform,
@@ -7,10 +7,13 @@ import { useRouter } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { lookupKitColours, type KitColour } from '../../../lib/api';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 export default function NewProjectScreen() {
   const router = useRouter();
   const { sp, fs, contentMaxWidth } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [projectName, setProjectName] = useState('');
   const [kitName, setKitName] = useState('');
   const [kitCode, setKitCode] = useState('');
@@ -92,7 +95,7 @@ export default function NewProjectScreen() {
               value={projectName}
               onChangeText={setProjectName}
               placeholder="e.g. RX-78-2 Build #1"
-              placeholderTextColor="#555"
+              placeholderTextColor={theme.placeholder}
             />
           </View>
 
@@ -105,7 +108,7 @@ export default function NewProjectScreen() {
                 value={kitName}
                 onChangeText={setKitName}
                 placeholder="e.g. RX-78-2 Gundam MG 1/100"
-                placeholderTextColor="#555"
+                placeholderTextColor={theme.placeholder}
               />
             </View>
             <View style={[styles.field, { gap: sp(6) }]}>
@@ -115,7 +118,7 @@ export default function NewProjectScreen() {
                 value={kitCode}
                 onChangeText={setKitCode}
                 placeholder="e.g. MG-001 or Bandai item #"
-                placeholderTextColor="#555"
+                placeholderTextColor={theme.placeholder}
               />
             </View>
             <TouchableOpacity
@@ -124,7 +127,7 @@ export default function NewProjectScreen() {
               disabled={lookingUp}
             >
               {lookingUp
-                ? <ActivityIndicator color="#12121f" />
+                ? <ActivityIndicator color="#fff" />
                 : <Text style={[styles.lookupBtnText, { fontSize: fs(15) }]}>Look up colours with AI</Text>
               }
             </TouchableOpacity>
@@ -168,30 +171,30 @@ export default function NewProjectScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  content: {},
-  heading: { color: '#fff', fontWeight: '800' },
-  section: { backgroundColor: '#1e1e32', borderRadius: 14 },
-  sectionTitle: { color: '#e8a838', fontWeight: '700', textTransform: 'uppercase' },
-  field: {},
-  label: { color: '#aaa', fontWeight: '600' },
-  input: {
-    backgroundColor: '#12121f', color: '#fff', borderRadius: 10,
-    borderWidth: 1, borderColor: '#2d2d44',
-  },
-  lookupBtn: { backgroundColor: '#2563eb', borderRadius: 10, alignItems: 'center' },
-  lookupBtnText: { color: '#fff', fontWeight: '700' },
-  btnDisabled: { opacity: 0.5 },
-  sourceNotes: { color: '#888', fontStyle: 'italic' },
-  noResults: { color: '#888' },
-  colourRow: { flexDirection: 'row', alignItems: 'center' },
-  colourDot: {
-    borderRadius: 6, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', flexShrink: 0,
-  },
-  colourName: { color: '#fff', fontWeight: '600' },
-  colourHex: { color: '#888', fontFamily: 'monospace' },
-  colourNotes: { color: '#888' },
-  saveBtn: { backgroundColor: '#e8a838', borderRadius: 12, alignItems: 'center' },
-  saveBtnText: { color: '#12121f', fontWeight: '800' },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    content: {},
+    heading: { color: t.text, fontWeight: '800' },
+    section: { backgroundColor: t.card, borderRadius: 14 },
+    sectionTitle: { color: t.accent, fontWeight: '700', textTransform: 'uppercase' },
+    field: {},
+    label: { color: t.subtext, fontWeight: '600' },
+    input: {
+      backgroundColor: t.input, color: t.text, borderRadius: 10,
+      borderWidth: 1, borderColor: t.border,
+    },
+    lookupBtn: { backgroundColor: '#2563eb', borderRadius: 10, alignItems: 'center' },
+    lookupBtnText: { color: '#fff', fontWeight: '700' },
+    btnDisabled: { opacity: 0.5 },
+    sourceNotes: { color: t.muted, fontStyle: 'italic' },
+    noResults: { color: t.muted },
+    colourRow: { flexDirection: 'row', alignItems: 'center' },
+    colourDot: { borderRadius: 6, borderWidth: 1, borderColor: 'rgba(0,0,0,0.1)', flexShrink: 0 },
+    colourName: { color: t.text, fontWeight: '600' },
+    colourHex: { color: t.muted, fontFamily: 'monospace' },
+    colourNotes: { color: t.muted },
+    saveBtn: { backgroundColor: t.accent, borderRadius: 12, alignItems: 'center' },
+    saveBtnText: { color: '#12121f', fontWeight: '800' },
+  });
+}

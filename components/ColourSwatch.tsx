@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { contrastTextColour } from '../lib/colourUtils';
 import { useResponsive } from '../lib/responsive';
+import { useTheme, type Theme } from '../lib/theme';
 
 type Props = {
   name: string;
@@ -13,6 +13,8 @@ type Props = {
 
 export default function ColourSwatch({ name, hex, source, onPress, size = 'medium' }: Props) {
   const { sp, fs } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const bg = hex ?? '#888888';
   const swatchBase = size === 'small' ? 48 : size === 'large' ? 96 : 72;
   const swatchSize = sp(swatchBase, Math.round(swatchBase * 1.3));
@@ -46,30 +48,32 @@ const badgeColour: Record<string, object> = {
   image: { backgroundColor: '#9333ea22', borderColor: '#9333ea' },
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1e1e32',
-    borderRadius: 12,
-    marginVertical: 4,
-  },
-  swatch: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  noColour: { color: '#fff', fontWeight: '700' },
-  info: { flex: 1, gap: 4 },
-  name: { color: '#fff', fontWeight: '600' },
-  hex: { color: '#aaa', fontFamily: 'monospace' },
-  badge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-  badgeText: { color: '#ccc', textTransform: 'uppercase', fontWeight: '600' },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: t.card,
+      borderRadius: 12,
+      marginVertical: 4,
+    },
+    swatch: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.1)',
+    },
+    noColour: { color: t.text, fontWeight: '700' },
+    info: { flex: 1, gap: 4 },
+    name: { color: t.text, fontWeight: '600' },
+    hex: { color: t.muted, fontFamily: 'monospace' },
+    badge: {
+      alignSelf: 'flex-start',
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+      borderRadius: 4,
+      borderWidth: 1,
+    },
+    badgeText: { color: t.subtext, textTransform: 'uppercase', fontWeight: '600' },
+  });
+}

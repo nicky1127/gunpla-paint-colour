@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View, Text, FlatList, StyleSheet, TouchableOpacity,
   Alert, ActivityIndicator, Modal, ScrollView,
@@ -10,12 +10,15 @@ import ColourSwatch from '../../../components/ColourSwatch';
 import MixSuggestion from '../../../components/MixSuggestion';
 import { getMixSuggestion } from '../../../lib/api';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 export default function ProjectDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { sp, fs, isTablet, numColumns } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [project, setProject] = useState<Project | null>(null);
   const [colours, setColours] = useState<ProjectColour[]>([]);
@@ -68,10 +71,10 @@ export default function ProjectDetailScreen() {
   };
 
   if (loading) {
-    return <View style={styles.centered}><ActivityIndicator color="#e8a838" size="large" /></View>;
+    return <View style={styles.centered}><ActivityIndicator color={theme.accent} size="large" /></View>;
   }
   if (!project) {
-    return <View style={styles.centered}><Text style={{ color: '#fff' }}>Project not found</Text></View>;
+    return <View style={styles.centered}><Text style={{ color: theme.text }}>Project not found</Text></View>;
   }
 
   const fabSize = sp(58, 68);
@@ -79,8 +82,8 @@ export default function ProjectDetailScreen() {
     ? { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center' as const, alignItems: 'center' as const, padding: 40 }
     : { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' as const };
   const modalSheetStyle = isTablet
-    ? { backgroundColor: '#1a1a2e', borderRadius: 24, padding: sp(28), paddingBottom: sp(28), maxHeight: '85%' as const, width: '100%' as const, maxWidth: 620 }
-    : { backgroundColor: '#1a1a2e', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: sp(20), paddingBottom: sp(40), maxHeight: '80%' as const };
+    ? { backgroundColor: theme.header, borderRadius: 24, padding: sp(28), paddingBottom: sp(28), maxHeight: '85%' as const, width: '100%' as const, maxWidth: 620 }
+    : { backgroundColor: theme.header, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: sp(20), paddingBottom: sp(40), maxHeight: '80%' as const };
 
   return (
     <View style={styles.container}>
@@ -138,7 +141,7 @@ export default function ProjectDetailScreen() {
       <Modal visible={showMixModal} animationType="slide" transparent>
         <View style={modalOverlayStyle}>
           <View style={modalSheetStyle}>
-            {!isTablet && <View style={styles.modalHandle} />}
+            {!isTablet && <View style={[styles.modalHandle, { backgroundColor: theme.border }]} />}
             <View style={[styles.modalHeader, { gap: sp(12), marginBottom: sp(16) }]}>
               {selectedColour && (
                 <>
@@ -151,7 +154,7 @@ export default function ProjectDetailScreen() {
               </TouchableOpacity>
             </View>
             {mixLoading
-              ? <ActivityIndicator color="#e8a838" size="large" style={{ marginTop: 40 }} />
+              ? <ActivityIndicator color={theme.accent} size="large" style={{ marginTop: 40 }} />
               : mixData
                 ? <MixSuggestion suggestion={mixData} />
                 : null
@@ -163,42 +166,44 @@ export default function ProjectDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  centered: { flex: 1, backgroundColor: '#12121f', alignItems: 'center', justifyContent: 'center' },
-  header: {
-    backgroundColor: '#1a1a2e',
-    borderBottomWidth: 1,
-    borderBottomColor: '#2d2d44',
-  },
-  backBtn: { marginBottom: 8 },
-  backText: { color: '#e8a838' },
-  headerInfo: { gap: 4 },
-  title: { color: '#fff', fontWeight: '800' },
-  subtitle: { color: '#aaa' },
-  colourCount: { color: '#888', fontWeight: '600', textTransform: 'uppercase', marginBottom: 4 },
-  empty: { alignItems: 'center', gap: 8 },
-  emptyTitle: { color: '#fff', fontWeight: '700' },
-  emptySubtitle: { color: '#888' },
-  fab: {
-    position: 'absolute',
-    backgroundColor: '#e8a838',
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#e8a838', shadowOpacity: 0.5, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
-  },
-  fabText: { color: '#12121f', fontWeight: '700', marginTop: -2 },
-  modalHandle: {
-    width: 40, height: 4, backgroundColor: '#444', borderRadius: 2,
-    alignSelf: 'center', marginBottom: 16,
-  },
-  modalHeader: { flexDirection: 'row', alignItems: 'center' },
-  modalSwatch: {
-    borderRadius: 8,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
-    flexShrink: 0,
-  },
-  modalTitle: { color: '#fff', fontWeight: '700', flex: 1 },
-  closeBtn: { padding: 4 },
-  closeBtnText: { color: '#888' },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    centered: { flex: 1, backgroundColor: t.bg, alignItems: 'center', justifyContent: 'center' },
+    header: {
+      backgroundColor: t.header,
+      borderBottomWidth: 1,
+      borderBottomColor: t.border,
+    },
+    backBtn: { marginBottom: 8 },
+    backText: { color: t.accent },
+    headerInfo: { gap: 4 },
+    title: { color: t.text, fontWeight: '800' },
+    subtitle: { color: t.subtext },
+    colourCount: { color: t.muted, fontWeight: '600', textTransform: 'uppercase', marginBottom: 4 },
+    empty: { alignItems: 'center', gap: 8 },
+    emptyTitle: { color: t.text, fontWeight: '700' },
+    emptySubtitle: { color: t.muted },
+    fab: {
+      position: 'absolute',
+      backgroundColor: t.accent,
+      alignItems: 'center', justifyContent: 'center',
+      shadowColor: t.accent, shadowOpacity: 0.5, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+      elevation: 8,
+    },
+    fabText: { color: '#12121f', fontWeight: '700', marginTop: -2 },
+    modalHandle: {
+      width: 40, height: 4, borderRadius: 2,
+      alignSelf: 'center', marginBottom: 16,
+    },
+    modalHeader: { flexDirection: 'row', alignItems: 'center' },
+    modalSwatch: {
+      borderRadius: 8,
+      borderWidth: 1, borderColor: 'rgba(0,0,0,0.1)',
+      flexShrink: 0,
+    },
+    modalTitle: { color: t.text, fontWeight: '700', flex: 1 },
+    closeBtn: { padding: 4 },
+    closeBtnText: { color: t.muted },
+  });
+}

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import type { MixSuggestionData } from '../lib/supabase';
 import { useResponsive } from '../lib/responsive';
+import { useTheme, type Theme } from '../lib/theme';
 
 type Props = {
   suggestion: MixSuggestionData;
@@ -9,6 +10,8 @@ type Props = {
 
 export default function MixSuggestion({ suggestion }: Props) {
   const { sp, fs } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const swatchSize = sp(36, 48);
 
   return (
@@ -61,29 +64,28 @@ export default function MixSuggestion({ suggestion }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  section: {
-    backgroundColor: '#1e1e32',
-    borderRadius: 12,
-  },
-  sectionTitle: {
-    color: '#e8a838',
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    marginBottom: 4,
-  },
-  stepRow: { flexDirection: 'row', alignItems: 'center' },
-  stepSwatch: {
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    flexShrink: 0,
-  },
-  stepInfo: { flex: 1 },
-  stepBrand: { color: '#e8a838', fontWeight: '700', textTransform: 'uppercase' },
-  stepName: { color: '#fff' },
-  stepRatio: { color: '#fff', fontWeight: '700', minWidth: 48, textAlign: 'right' },
-  notes: { backgroundColor: '#1e1e32', borderRadius: 12 },
-  notesLabel: { color: '#aaa', fontWeight: '600', textTransform: 'uppercase' },
-  notesText: { color: '#ccc', lineHeight: 20 },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1 },
+    section: { backgroundColor: t.card, borderRadius: 12 },
+    sectionTitle: {
+      color: t.accent,
+      fontWeight: '700',
+      textTransform: 'uppercase',
+      marginBottom: 4,
+    },
+    stepRow: { flexDirection: 'row', alignItems: 'center' },
+    stepSwatch: {
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.1)',
+      flexShrink: 0,
+    },
+    stepInfo: { flex: 1 },
+    stepBrand: { color: t.accent, fontWeight: '700', textTransform: 'uppercase' },
+    stepName: { color: t.text },
+    stepRatio: { color: t.text, fontWeight: '700', minWidth: 48, textAlign: 'right' },
+    notes: { backgroundColor: t.card, borderRadius: 12 },
+    notesLabel: { color: t.subtext, fontWeight: '600', textTransform: 'uppercase' },
+    notesText: { color: t.subtext, lineHeight: 20 },
+  });
+}

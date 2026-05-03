@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Image,
   Alert, ActivityIndicator, ScrollView, TextInput,
@@ -9,10 +9,13 @@ import { supabase } from '../../../lib/supabase';
 import { scanPaintPot } from '../../../lib/api';
 import type { ScannedPaint } from '../../../lib/api';
 import { useResponsive } from '../../../lib/responsive';
+import { useTheme, type Theme } from '../../../lib/theme';
 
 export default function AddScanScreen() {
   const router = useRouter();
   const { sp, fs, contentMaxWidth } = useResponsive();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
@@ -149,7 +152,7 @@ export default function AddScanScreen() {
                   value={value}
                   onChangeText={set}
                   placeholder={placeholder}
-                  placeholderTextColor="#555"
+                  placeholderTextColor={theme.placeholder}
                 />
               </View>
             ))}
@@ -175,39 +178,41 @@ export default function AddScanScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#12121f' },
-  content: {},
-  headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
-  backText: { color: '#e8a838' },
-  heading: { color: '#fff', fontWeight: '800' },
-  description: { color: '#aaa', lineHeight: 20 },
-  buttonRow: { flexDirection: 'row' },
-  imgBtn: {
-    flex: 1, backgroundColor: '#1e1e32', borderRadius: 10,
-    alignItems: 'center', borderWidth: 1, borderColor: '#2d2d44',
-  },
-  imgBtnText: { color: '#fff', fontWeight: '600' },
-  preview: { width: '100%', borderRadius: 12, backgroundColor: '#1e1e32' },
-  scanBtn: {
-    backgroundColor: '#2563eb', borderRadius: 12,
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-  },
-  scanBtnText: { color: '#fff', fontWeight: '700' },
-  btnDisabled: { opacity: 0.5 },
-  resultSection: { backgroundColor: '#1e1e32', borderRadius: 14 },
-  resultHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  sectionTitle: { color: '#e8a838', fontWeight: '700', textTransform: 'uppercase' },
-  confidenceBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6, borderWidth: 1 },
-  confidenceText: { fontWeight: '700' },
-  editHint: { color: '#888' },
-  field: {},
-  label: { color: '#aaa', fontWeight: '600' },
-  input: {
-    backgroundColor: '#12121f', color: '#fff', borderRadius: 8,
-    borderWidth: 1, borderColor: '#2d2d44',
-  },
-  hexPreview: { borderRadius: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
-  saveBtn: { backgroundColor: '#e8a838', borderRadius: 10, alignItems: 'center' },
-  saveBtnText: { color: '#12121f', fontWeight: '800' },
-});
+function createStyles(t: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: t.bg },
+    content: {},
+    headerRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+    backText: { color: t.accent },
+    heading: { color: t.text, fontWeight: '800' },
+    description: { color: t.subtext, lineHeight: 20 },
+    buttonRow: { flexDirection: 'row' },
+    imgBtn: {
+      flex: 1, backgroundColor: t.card, borderRadius: 10,
+      alignItems: 'center', borderWidth: 1, borderColor: t.border,
+    },
+    imgBtnText: { color: t.text, fontWeight: '600' },
+    preview: { width: '100%', borderRadius: 12, backgroundColor: t.card },
+    scanBtn: {
+      backgroundColor: '#2563eb', borderRadius: 12,
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    },
+    scanBtnText: { color: '#fff', fontWeight: '700' },
+    btnDisabled: { opacity: 0.5 },
+    resultSection: { backgroundColor: t.card, borderRadius: 14 },
+    resultHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    sectionTitle: { color: t.accent, fontWeight: '700', textTransform: 'uppercase' },
+    confidenceBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6, borderWidth: 1 },
+    confidenceText: { fontWeight: '700' },
+    editHint: { color: t.muted },
+    field: {},
+    label: { color: t.subtext, fontWeight: '600' },
+    input: {
+      backgroundColor: t.input, color: t.text, borderRadius: 8,
+      borderWidth: 1, borderColor: t.border,
+    },
+    hexPreview: { borderRadius: 8, borderWidth: 1, borderColor: 'rgba(0,0,0,0.1)' },
+    saveBtn: { backgroundColor: t.accent, borderRadius: 10, alignItems: 'center' },
+    saveBtnText: { color: '#12121f', fontWeight: '800' },
+  });
+}
