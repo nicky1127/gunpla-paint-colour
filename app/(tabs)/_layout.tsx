@@ -1,15 +1,13 @@
 import { Tabs } from 'expo-router';
-import { View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useResponsive } from '../../lib/responsive';
 import { useTheme } from '../../lib/theme';
 
-function TabIcon({ name, focused }: { name: string; focused: boolean }) {
-  const { fs } = useResponsive();
-  return (
-    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: fs(20, 26), opacity: focused ? 1 : 0.6 }}>{name}</Text>
-    </View>
-  );
+type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
+
+function TabIcon({ icon, focused, color }: { icon: IoniconsName; focused: boolean; color: string }) {
+  const { sp } = useResponsive();
+  return <Ionicons name={focused ? icon : `${icon}-outline` as IoniconsName} size={sp(22, 28)} color={color} />;
 }
 
 export default function TabLayout() {
@@ -35,24 +33,24 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="settings" focused={focused} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="projects"
         options={{
           title: 'Projects',
-          tabBarIcon: ({ focused }) => <TabIcon name="🎨" focused={focused} />,
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="layers" focused={focused} color={color} />,
         }}
       />
       <Tabs.Screen
         name="inventory"
         options={{
-          title: 'My Paints',
-          tabBarIcon: ({ focused }) => <TabIcon name="🖌️" focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ focused }) => <TabIcon name="⚙️" focused={focused} />,
+          title: 'Paints',
+          tabBarIcon: ({ focused, color }) => <TabIcon icon="flask" focused={focused} color={color} />,
         }}
       />
     </Tabs>
